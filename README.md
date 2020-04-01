@@ -35,18 +35,14 @@ O scanner de rede interage com outras máquinas utilizando dos protocolos TCP (n
 
 O PID fork foi utilizado de uma maneira diferente da demonstrada nos exemplos. Os exemplos utilizam-se das funções contidas na clib, enquanto que em nossa implementação é utilizado a biblioteca nativa do python para o gerenciamento de subprocessos.
 
-Para realizar um PID fork no python temos que utilizar a lib subprocess, porém temos que prestar atenção em alguns detalhes como qual processo estamos fazendo o fork. Para isso utilizamos o parametro "shell=True" na classe Popen (esta classe é um construtor de processos), este parametro transforma nosso novo processo em subprocesso de shell que executará em si mesma a lista de comandos nos arquivos sh.
+Para realizar um PID fork no python temos que utilizar a lib subprocess, porém temos que prestar atenção em alguns detalhes como qual processo estamos fazendo o fork. Para isso utilizamos o parametro "shell=False" na classe Popen (esta classe é um construtor de processos), este parametro transforma nosso novo processo em subprocesso de shell que executará em si mesma a lista de comandos dos arquivos sh.
 
 Esse processo de criação de subprocesso utiliza a função os.fork() a fim de criar um processo filho (um novo pid partindo do pid atual).
 
-## Conceitos a implementar
+## Uso das Threads
 
-### Threads
-
-
-### Subprocess
-
+Ainda estamos pensando como faremos para usar as threads de modo direto (a linguagem se utiliza delas indiretamente)
 
 ## Referências
 
-
+mitre att&ck
