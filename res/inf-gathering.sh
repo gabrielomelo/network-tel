@@ -46,6 +46,6 @@ echo "descobrindo informações de rede" >> tmp
 #netstat >> tmp
 ifconfig >> tmp
 
-echo "criando um servidor web na raiz a partir do diretorio atual"
+#echo "criando um servidor web na raiz a partir do diretorio atual"
 
-python3 -m http.server 1234
+#python3 -m http.server 1234
