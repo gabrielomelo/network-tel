@@ -1,4 +1,4 @@
-# network-tel - Network telemetry suite
+# network-tel - Network telemetry tool
 
 ## Integrantes
 
@@ -10,12 +10,23 @@
 
 Construir um software em python que possibilite a execução de comandos de forma remota usando o ssh, telnet, WinRM (Windows remote management protocol) e WMI (Windows Management Instrumentation).
 
-### Possíveis Features
+## Entregas
+
+O trabalho foi dividido em 5 entregas diferentes que compõem a nota semestral. Tinhamos uma ideia do iriamos entregas, porém devido a situação atual e não termos o laboratório disponível algumas features sofreram mudanças.
+
+1. Script usando subprocesso - Feito.
+2. Acesso remoto pelo subprocesso - Feito, mas não é o padrão no repositório (é necessário apenas alterar uma linha para a chamado do ssh).
+3. Execução de rotina personalizada - Feito.
+4. Information Gathering da rede - Feito.
+5. Testes/Correções - Foram feitas de forma implicita e com limitações de espaço e infra-estrutura. Houve uma mudança para: "Paralelismo baseado em threads".
+
+### Features
 
 Temos algumas features que podem estar contidas no fim desse projeto:
-* Execução de Scans de rede na rede local a fim de descobrir máquinas "vulneráveis" ao protocolo/linguagem utilizada para os scripts.
-* Sistema servidor de comandos (CnC) multithread (ainda pensando na implementação ~não é tão fácil quanto parece~).
-* Geração de relatório sobre estado de operação.
+
+* Execução de Scripts personalizados de maneira remota e coordenada.
+* Execução de Scans de rede na rede local a fim de descobrir máquinas "vulneráveis" ao protocolo e consequentemente linguagem utilizada para os scripts.
+* Uso de paralelismo baseado em threads na execução de mais de um ataque por vez, ou seja, de forma assíncrona
 
 ## Uso do sistema de arquivos
 
@@ -31,6 +42,8 @@ O sistema de arquivos está sendo usado aqui das seguintes maneiras:
 
 O scanner de rede interage com outras máquinas utilizando dos protocolos TCP (na nossa implementação), utilizamos a abstração do nmap para o python, esta que por sua vez facilita muito a maneira como indexamos as máquinas que estão up e possuem uma porta escutando o protocolo que estamos tentando utilizar.
 
+O scanner realiza um scan de serviço apenas e retorna um json com todos os serviços encontrados e estados das portas, e podemos especificar para a API qual porta/protocolo estamos desejando atacar.
+
 ## Uso do PID fork
 
 O PID fork foi utilizado de uma maneira diferente da demonstrada nos exemplos. Os exemplos utilizam-se das funções contidas na clib, enquanto que em nossa implementação é utilizado a biblioteca nativa do python para o gerenciamento de subprocessos.
@@ -41,8 +54,19 @@ Esse processo de criação de subprocesso utiliza a função os.fork() a fim de 
 
 ## Uso das Threads
 
-Ainda estamos pensando como faremos para usar as threads de modo direto (a linguagem se utiliza delas indiretamente)
+O uso das threads foi pensado de um modo que não tornasse a ferramenta em algo diferente do idealizado no momento de sua concepção. Foi utilizada a mesma forma como o make trata um processo de compilação (o uso de jobs), ou seja, pegamos partes que são diferentes e fazemos elas de forma paralela (consumo de memoria de threads mais alto) por meio de processos individuais.
+
+Suponhamos que temos uma rede de 254 hosts e nela 10 possuem a porta 22 da pilha tcp aberta, tendo utilizado a flag de scan e indicando para o scanner qual porta (protocolo) estamos procurando, teremos 10 jobs a ser realizados, e esses irão virar subshells do meu processo atual, ou seja, teremos outro PID. Tendo esse novo processo, teremos também um objeto de subprocesso que serão incializados e iniciados em diferentes threads (não concorrentes).
+
+Isso possibilita algo bem interessante, imagine que dessas 254 máquinas, 64 estão vulneráveis, podemos realizar a tentativa de intrusão/telemetria de acordo com nosso hardware ao inves de ser de modo sequencial, podemos ter 8 threads e terminar a atividade em 1/8 do tempo.
+
+## Bash Scripting e Custom Scripts
+
+Temos um arquivo padrão que é utilizado para realizar o reconhecimento do host que temos acesso (res/inf-gathering.sh). 
+Embora ele seja bem completo para fins de demonstração, pode ser que o usuário queira usar algo mais adequado a sua situação, ou até mesmo esteja lidando com outra linguagem (bash, bat, python e etc) no endpoint a ser atacado. Para isso temos um parametro "--path" que pode ser passado de maneira absoluta ou relativa ao seu ponto de execução.
 
 ## Referências
 
-mitre att&ck
+* Mitre ATT&CK. Disponível em: https://attack.mitre.org/. Acessado em 15/05/2020.
+* Atomic Red Team. Red Canary. Disponível em: https://atomicredteam.io/. Acessado em 15/05/2020.
+* Python 3.7. Python Software Foundation. Disponível em: https://python.org. Acessado em 15/05/2020.

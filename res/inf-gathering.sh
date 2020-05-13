@@ -15,9 +15,8 @@ cat /etc/hosts >> tmp
 
 echo "descobrindo grupos de usuários e usuários presentes no sistema" >> tmp
 
-cat /etc/passwd
-cat /etc/groups >> tmp
-cat /etc/sudoers >> tmp
+cat /etc/passwd | grep root >> tmp
+cat /etc/sudoers | grep "defaults" >> tmp
 groups >> tmp
 id >> tmp
 
@@ -43,9 +42,18 @@ echo "descobrindo recursivamente diretórios importantes" >> tmp
 
 echo "descobrindo informações de rede" >> tmp
 
-#netstat >> tmp
+netstat | grep "tcp*" >> tmp
 ifconfig >> tmp
 
 #echo "criando um servidor web na raiz a partir do diretorio atual"
 
 #python3 -m http.server 1234
+
+
+echo "script PID"
+
+echo $$
+
+echo "self destructing"
+
+kill $$
