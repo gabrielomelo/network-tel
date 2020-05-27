@@ -1,18 +1,12 @@
 # network-tel - Network telemetry tool
 
-## Integrantes
-
-* Gabriel Melo
-* Michelle Brandão
-* Victtor Mendes
-
 ## Objetivo
 
 Construir um software em python que possibilite a execução de comandos de forma remota usando o ssh, telnet, WinRM (Windows remote management protocol) e WMI (Windows Management Instrumentation).
 
 ## Entregas
 
-O trabalho foi dividido em 5 entregas diferentes que compõem a nota semestral. Tinhamos uma ideia do iriamos entregas, porém devido a situação atual e não termos o laboratório disponível algumas features sofreram mudanças.
+O trabalho foi dividido em 5 entregas diferentes que compõem a nota semestral. Tinha uma ideia do iria entregar, porém, devido a situação atual e de não ter o laboratório disponível algumas features sofreram mudanças.
 
 1. Script usando subprocesso - Feito.
 2. Acesso remoto pelo subprocesso - Feito, mas não é o padrão no repositório (é necessário apenas alterar uma linha para a chamado do ssh).
@@ -31,16 +25,16 @@ Temos algumas features que podem estar contidas no fim desse projeto:
 ## Uso do sistema de arquivos
 
 O sistema de arquivos está sendo usado aqui das seguintes maneiras:
-* Utilizamos o stdin e stdout (buffers de entrada e saída padrão de um processo), que são tradados como arquivo nos sistemas da família UNIX.
-* Utilizamos as funções de leitura e escrita de arquivos contidas na lib nativa do python 3, essas funções se assemelham ao C quando de maneira abstrata utilizam-se de um ponteiro de arquivos "fp" provenientes a uma requisição ao FS.
-* Utilizamos alguns comandos GNU (GNU is NOT UNIX) afim de interagir com o host alvo, são eles:
+* Utilizei o stdin e stdout (buffers de entrada e saída padrão de um processo), que são tradados como arquivo nos sistemas da família UNIX.
+* Utilizei as funções de leitura e escrita de arquivos contidas na lib nativa do python 3, essas funções se assemelham ao C quando de maneira abstrata utilizam-se de um ponteiro de arquivos "fp" provenientes a uma requisição ao FS.
+* Utilizei alguns comandos GNU (GNU is NOT UNIX) afim de interagir com o host alvo, são eles:
 * * ls - list. Lista os conteúdos de um path que esteja gravado na FAT.
 * * free. Retorna o "extrato" do sistema de arquivos.
 * * Diversos comandos de listagem de dispositivos de rede e etc, esses que mesmo que físicos são tratados como arquivos e estão presentes na árvore gerenciada pelo sistema de arquivos virtual.
 
 ## Uso do scanner de rede
 
-O scanner de rede interage com outras máquinas utilizando dos protocolos TCP (na nossa implementação), utilizamos a abstração do nmap para o python, esta que por sua vez facilita muito a maneira como indexamos as máquinas que estão up e possuem uma porta escutando o protocolo que estamos tentando utilizar.
+O scanner de rede interage com outras máquinas utilizando dos protocolos TCP (nessa implementação), utilizei a abstração do nmap para o python, esta que por sua vez facilita muito a maneira como indexei as máquinas que estão up e possuem uma porta escutando o protocolo que estamos tentando utilizar.
 
 O scanner realiza um scan de serviço apenas e retorna um json com todos os serviços encontrados e estados das portas, e podemos especificar para a API qual porta/protocolo estamos desejando atacar.
 
@@ -54,7 +48,7 @@ Esse processo de criação de subprocesso utiliza a função os.fork() a fim de 
 
 ## Uso das Threads
 
-O uso das threads foi pensado de um modo que não tornasse a ferramenta em algo diferente do idealizado no momento de sua concepção. Foi utilizada a mesma forma como o make trata um processo de compilação (o uso de jobs), ou seja, pegamos partes que são diferentes e fazemos elas de forma paralela (consumo de memoria de threads mais alto) por meio de processos individuais.
+O uso das threads foi pensado de um modo que não tornasse a ferramenta em algo diferente do idealizado no momento de sua concepção. Foi utilizada a mesma forma como o make trata um processo de compilação (o uso de jobs), ou seja, pego partes que são diferentes e as faço serem executadas de forma paralela por meio de processos individuais contidos em cada thread.
 
 Suponhamos que temos uma rede de 254 hosts e nela 10 possuem a porta 22 da pilha tcp aberta, tendo utilizado a flag de scan e indicando para o scanner qual porta (protocolo) estamos procurando, teremos 10 jobs a ser realizados, e esses irão virar subshells do meu processo atual, ou seja, teremos outro PID. Tendo esse novo processo, teremos também um objeto de subprocesso que serão incializados e iniciados em diferentes threads (não concorrentes).
 
