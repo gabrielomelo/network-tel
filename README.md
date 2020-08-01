@@ -1,4 +1,4 @@
-# network-tel - Network telemetry tool
+# network-tel
 
 ## Objetivo
 
